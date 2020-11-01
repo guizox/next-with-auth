@@ -1,9 +1,20 @@
-import { Provider } from 'next-auth/client'
-import './styles.css'
+import React from "react";
+import { Provider } from "next-auth/client";
+import Grid from "@material-ui/core/Grid";
+import NavbarComponent from "../components/navbar/";
+import "./styles.css";
 
 // Use the <Provider> to improve performance and allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
-export default function App ({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
+  React.useEffect(() => {
+    // Remove the server-side injected CSS.
+    const jssStyles = document.querySelector("#jss-server-side");
+    if (jssStyles) {
+      jssStyles.parentElement.removeChild(jssStyles);
+    }
+  }, []);
+
   return (
     <Provider
       // Provider options are not required but can be useful in situations where
@@ -21,10 +32,15 @@ export default function App ({ Component, pageProps }) {
         //
         // Note: If a session has expired when keep alive is triggered, all open
         // windows / tabs will be updated to reflect the user is signed out.
-        keepAlive: 0
+        keepAlive: 0,
       }}
-      session={pageProps.session} >
-      <Component {...pageProps} />
+      session={pageProps.session}
+    >
+      <NavbarComponent />
+
+      <Grid container style={{ padding: 20 }}>
+        <Component {...pageProps} />
+      </Grid>
     </Provider>
-  )
+  );
 }
